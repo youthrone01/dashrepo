@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+      .form{
+          display: inline-block;
+          margin-right: 20px;
+      }
+  </style>
+</head>
+<body>
+    <h1>Test App</h1>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/dashboard/admin">Dashboard</a></button>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/users/{{request.session.id}}">Profile</a></button>
+    <hr>
+    <br>
+    <h3>Edit user #{{edit_user.id}}</h3>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/dashboard/admin">Dashboard</a></button><br>
+    <form class="form" action="/users/edit/{{edit_user.id}}" method="post">
+        <h5>Edit Information</h5>
+        {% csrf_token %}
+        <input type="hidden" name="info" value="user">
+        <input type="hidden" name="id" value="{{edit_user.id}}">
+         First_name: <input type="text" name="first_name" value="{{edit_user.first_name}}"><br><br>
+         Last_name: <input type="text" name="last_name" value="{{edit_user.last_name}}"><br><br>
+         Email: <input type="text" name="email" value="{{edit_user.email}}"><br><br>
+         User Level: <select name="user_level">
+             {% if edit_user.user_level == 1 %}
+             <option value="1">Normal</option>
+             <option value="9">Admin</option>
+             {% endif %}
+             {% if edit_user.user_level == 9 %}
+             <option value="9">Admin</option>
+             <option value="1">Normal</option>
+             {% endif %}
+        </select><br><br> 
+         <input type="submit"  class="btn btn-success navbar-btn" value="Save">
+    </form>
+    <form class="form" action="/users/edit/{{edit_user.id}}" method="post">
+        <h5>Change Password</h5>
+        {% csrf_token %}
+        <input type="hidden" name="info" value="pass">                      
+         Password: <input type="text" name="password"><br><br>
+         Confirm_password: <input type="text" name="con_pw"><br><br> 
+         <input type="submit"  class="btn btn-success navbar-btn" value="Update Password">
+    </form>
+    <br>
+
+    <br>
+    <br>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+
+</body>
+</html>

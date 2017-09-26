@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    .comment{
+      margin-left: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Test App</h1>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/dashboard/admin">Dashboard</a></button>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/user/{{request.session.id}}">Profile</a></button>
+    <button type="button" class="btn btn-default navbar-btn"><a href="/logoff">Log off</a></button>
+    <hr>
+    <br>
+
+    <h2>{{the_user.first_name}} {{the_user.last_name}}</h2>
+    <h5>Registered at: {{the_user.created_at}}</h5>
+    <h5>User ID: {{the_user.id}}</h5>
+    <h5>Email address: {{the_user.email}}</h5>
+    <h5>Description: {{the_user.desc}}</h5>
+
+    <h2>Leave a message for {{the_user.first_name}} {{the_user.last_name}}</h2>
+    <form action="/users/show/{{the_user.id}}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="input" value="message">
+     <textarea name="message" id="message" cols="60" rows="5"></textarea><br>
+     <input type="submit"  class="btn btn-success navbar-btn" value="Post">
+    </form>
+
+    {%if all_messages%}
+
+      {%for message in all_messages%}
+      <h4>{{message.poster.first_name}} {{message.poster.last_name}}</h4>
+      <h5>{{message.content}}</h5>
+      <p>{{message.created_at}}</p>
+            {% if all_comments %} 
+              {% for comment in all_comments %}
+              {% if comment.message.id == message.id %} 
+              <div class="comment" >
+              <h4>{{comment.user.first_name}} {{comment.user.last_name}}</h4>
+              <h5>{{comment.detail}}</h5>
+              <p>{{comment.created_at}}</p>
+              </div>
+              {% endif %}
+              {% endfor %}
+            
+            {% endif %}
+            <form class="comment" action="/users/show/{{the_user.id}}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="input" value="comment">
+              <input type="hidden" name="id" value="{{message.id}}">
+             <textarea name="comment" id="comment" cols="30" rows="2"></textarea><br>
+             <input type="submit"  class="btn btn-success navbar-btn" value="Post">
+            </form>
+
+      <br>
+      {%endfor%}
+    
+    {%endif%}
+                  
+  
+</div>
+
+</body>
+</html>
